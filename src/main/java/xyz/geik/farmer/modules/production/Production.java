@@ -31,6 +31,8 @@ public class Production extends FarmerModule {
 
     private final String[] numberFormat = new String[]{"k", "m", "b", "t"};
 
+    private static final int TICKS_PER_MINUTE = 1200;
+
     private long reCalculate = 15L;
 
     private final List<String> productionItems = new ArrayList<>();

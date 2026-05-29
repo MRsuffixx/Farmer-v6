@@ -40,6 +40,9 @@ public class ProductionModel {
      */
     private boolean isCalculating;
 
+    private static final int TICKS_PER_SECOND = 20;
+    private static final int PRODUCTION_CALC_DELAY_SECONDS = 5;
+
     /**
      * AverageProduction constructor
      *
@@ -56,7 +59,7 @@ public class ProductionModel {
             setResult(getLastInput() * 12);
             this.setCalculating(false);
             gui.draw();
-        }, 5 * 20L);
+        }, PRODUCTION_CALC_DELAY_SECONDS * TICKS_PER_SECOND);
     }
 
     /**

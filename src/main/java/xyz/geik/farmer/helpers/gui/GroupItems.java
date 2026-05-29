@@ -12,7 +12,7 @@ import xyz.geik.farmer.model.user.User;
 import xyz.geik.farmer.modules.FarmerModule;
 import xyz.geik.farmer.modules.production.model.ProductionModel;
 import xyz.geik.glib.chat.ChatUtils;
-import xyz.geik.glib.module.ModuleManager;
+import xyz.geik.glib.shades.xseries.XMaterial;
 
 import java.util.HashMap;
 import java.util.List;

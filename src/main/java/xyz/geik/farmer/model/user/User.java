@@ -10,6 +10,7 @@ import xyz.geik.farmer.model.Farmer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -133,5 +134,18 @@ public class User {
         } catch(NumberFormatException exception) {
             return false;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return farmerId == user.farmerId && Objects.equals(uuid, user.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(farmerId, uuid);
     }
 }
