@@ -210,8 +210,6 @@ public class Main extends JavaPlugin {
      */
     private void registerModules() {
         this.moduleManager = new ModuleManager();
-        //getModuleManager().enableModules();
-        //FarmerModule.calculateModulesUseGui();
 
         ModuleHelper helper = ModuleHelper.getInstance();
         helper.loadModules();

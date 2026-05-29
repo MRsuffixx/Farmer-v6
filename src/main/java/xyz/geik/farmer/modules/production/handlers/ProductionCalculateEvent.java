@@ -22,6 +22,10 @@ import java.util.List;
  */
 public class ProductionCalculateEvent implements Listener {
 
+    private static final int TICKS_PER_SECOND = 20;
+    private static final int SECONDS_PER_MINUTE = 60;
+    private static final int MILLIS_PER_SECOND = 1000;
+
     /**
      * Constructor of class
      */
@@ -85,6 +89,6 @@ public class ProductionCalculateEvent implements Listener {
         Main.getMorePaperLib().scheduling().asyncScheduler().runDelayed(() -> {
             event.getFarmer().getInv().setProductionModels(new ArrayList<>());
             event.getFarmer().getInv().setProductionCalculated(false);
-        }, Duration.ofMillis(20 * 60 * Production.getInstance().getReCalculate() * 1000));
+        }, Duration.ofMillis((long) TICKS_PER_SECOND * SECONDS_PER_MINUTE * Production.getInstance().getReCalculate() * MILLIS_PER_SECOND));
     }
 }
