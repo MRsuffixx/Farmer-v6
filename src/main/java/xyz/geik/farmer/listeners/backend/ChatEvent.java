@@ -28,7 +28,8 @@ public class ChatEvent implements Listener {
     @EventHandler
     public void chatEvent(AsyncPlayerChatEvent e) {
         String playerName = e.getPlayer().getName();
-        if (!players.containsKey(playerName)) {
+        String regionId = players.remove(playerName);
+        if (regionId == null) {
             return;
         }
 
@@ -36,39 +37,33 @@ public class ChatEvent implements Listener {
         Player player = e.getPlayer();
         String input = e.getMessage();
         long currentTime = System.currentTimeMillis();
-        if (cooldowns.containsKey(playerName)) {
-            if (currentTime - cooldowns.get(playerName) < COOLDOWN_TIME) {
-                return;
-            }
+        Long lastTime = cooldowns.get(playerName);
+        if (lastTime != null && currentTime - lastTime < COOLDOWN_TIME) {
+            return;
         }
         cooldowns.put(playerName, currentTime);
         if (input.equalsIgnoreCase(Main.getLangFile().getVarious().getInputCancelWord())) {
-            players.remove(playerName);
             ChatUtils.sendMessage(player, Main.getLangFile().getMessages().getInputCancel());
             return;
         }
         UUID targetUUID = FastPlayerLookup.lookupPlayer(input);
         if (targetUUID == null) {
             ChatUtils.sendMessage(player, Main.getLangFile().getMessages().getUserCouldntFound());
-            players.remove(playerName);
             return;
         }
         MorePaperLib morePaperLib = new MorePaperLib(Main.getInstance());
         morePaperLib.scheduling().entitySpecificScheduler(player).run(() -> {
             try {
-                String storedRegionID = players.get(playerName);
-                Farmer farmer = FarmerManager.getFarmers().get(storedRegionID);
+                Farmer farmer = FarmerManager.getFarmers().get(regionId);
 
                 if (farmer == null) {
                     ChatUtils.sendMessage(player, "Error: Could not find farmer data");
-                    players.remove(playerName);
                     return;
                 }
                 // Check if the player is the owner or has farmer.admin permission
                 if (!farmer.getOwnerUUID().equals(player.getUniqueId())
                         && !player.hasPermission("farmer.admin")) {
                     ChatUtils.sendMessage(player, Main.getLangFile().getMessages().getNoPerm());
-                    players.remove(playerName);
                     return;
                 }
                 if (farmer.getUsers().stream().anyMatch(user -> user.getUuid().equals(targetUUID))) {
@@ -80,11 +75,9 @@ public class ChatEvent implements Listener {
                             new Placeholder("{player}", input));
                 }
 
-                players.remove(playerName);
                 UsersGui.showGui(player, farmer);
 
             } catch (Exception ex) {
-                players.remove(playerName);
                 ChatUtils.sendMessage(player, Main.getLangFile().getMessages().getUserCouldntFound());
             }
         }, null);
