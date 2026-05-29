@@ -102,21 +102,24 @@ public abstract class SQL {
                 FarmerInv inv = new FarmerInv(items, level.getCapacity());
 
                 PreparedStatement userStatement = connection.prepareStatement(USERS_QUERY);
-                userStatement.setInt(1, farmerID);
-                ResultSet userSet = userStatement.executeQuery();
-                Set<User> users = new LinkedHashSet<>();
+                ResultSet userSet;
+                try (userStatement) {
+                    userStatement.setInt(1, farmerID);
+                    userSet = userStatement.executeQuery();
+                    Set<User> users = new LinkedHashSet<>();
 
-                while (userSet.next()) {
-                    String name = userSet.getString("name");
-                    String uuid = userSet.getString("uuid");
+                    while (userSet.next()) {
+                        String name = userSet.getString("name");
+                        String uuid = userSet.getString("uuid");
 
-                    FarmerPerm role = FarmerPerm.getRole(userSet.getInt("role"));
-                    users.add(new User(farmerID, name, UUID.fromString(uuid), role));
+                        FarmerPerm role = FarmerPerm.getRole(userSet.getInt("role"));
+                        users.add(new User(farmerID, name, UUID.fromString(uuid), role));
+                    }
                 }
                 Farmer farmer = new Farmer(farmerID, regionID, users, inv, level, state);
                 FarmerModule.databaseGetAttributes(connection, farmer);
                 FarmerManager.getFarmers().put(regionID, farmer);
-                loadedCount++; // Sayacı artır
+                loadedCount++;
             }
             final int finalLoadedCount = loadedCount;
             Main.getMorePaperLib().scheduling().globalRegionalScheduler().run(() -> {
@@ -164,7 +167,7 @@ public abstract class SQL {
             throwables.printStackTrace();
         } finally {
             closeConnections(saveStatement, connection, resultSet);
-            closeConnections(selectStatement, connection, resultSet);
+            closeConnections(selectStatement, null, null);
         }
     }
 

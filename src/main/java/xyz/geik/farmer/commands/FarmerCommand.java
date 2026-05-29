@@ -105,7 +105,7 @@ public class FarmerCommand extends BaseCommand {
 
         UUID ownerUUID = Main.getIntegration().getOwnerUUID(regionID);
         // Custom perm check for remove command
-        if (player.hasPermission("farmer.remove") && ownerUUID.equals(player.getUniqueId()) || player.hasPermission("farmer.admin")) {
+        if ((player.hasPermission("farmer.remove") && ownerUUID.equals(player.getUniqueId())) || player.hasPermission("farmer.admin")) {
             // Removing by #FarmerAPI and sending message by result
             boolean result = FarmerAPI.getFarmerManager().removeFarmer(regionID, ownerUUID);
             if (result)
@@ -122,9 +122,7 @@ public class FarmerCommand extends BaseCommand {
     @SubCommand(value = "about", alias = {"hakkında", "pl", "ver", "version", "bilgi"})
     public void aboutCommand(@NotNull CommandSender player) {
         if (!(player.hasPermission("farmer.admin")) &&
-                ((player instanceof Player)
-                        || (player.getName().equals("Geyik")
-                        || player.getName().equals("Amownyy")))) {
+                (player instanceof Player)) {
             ChatUtils.sendMessage(player, Main.getLangFile().getMessages().getNoPerm());
             return;
         }
