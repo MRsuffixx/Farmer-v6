@@ -14,7 +14,9 @@ import xyz.geik.farmer.modules.production.model.ProductionModel;
 import xyz.geik.glib.chat.ChatUtils;
 import xyz.geik.glib.module.ModuleManager;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,10 +30,19 @@ public class GroupItems {
 
     private static final Pattern MODULE_P = Pattern.compile("\\{module_(.*?)\\}");
 
+    private static Map<XMaterial, ProductionModel> productionModelCache = new HashMap<>();
+
     /**
      * Constructor of class
      */
     public GroupItems() {}
+
+    public static void cacheProductionModels(Farmer farmer) {
+        productionModelCache.clear();
+        for (ProductionModel model : farmer.getInv().getProductionModels()) {
+            productionModelCache.put(model.getMaterial(), model);
+        }
+    }
 
     /**
      * Farmer stock item which can be anything in items.yml
@@ -58,9 +69,7 @@ public class GroupItems {
         String color = selectFillColor(percent);
         // Average production of item cache if it's null
         // it won't be displayed because there is no calculation required
-        ProductionModel productionModel = farmer.getInv().getProductionModels().stream()
-                .filter(g -> g.getMaterial().equals(farmerItem.getMaterial()))
-                .findFirst().orElse(null);
+        ProductionModel productionModel = productionModelCache.get(farmerItem.getMaterial());
         // Lore map
         meta.setLore(ChatUtils.color(Main.getLangFile().getGui().getFarmerGui().getItems().getGroupItems().getLore().stream()
                 .map(key -> {
