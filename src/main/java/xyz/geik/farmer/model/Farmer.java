@@ -12,7 +12,6 @@ import xyz.geik.farmer.modules.FarmerModule;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -259,18 +258,5 @@ public class Farmer implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Farmer farmer = (Farmer) o;
-        return id == farmer.id && Objects.equals(regionID, farmer.regionID);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, regionID);
     }
 }
